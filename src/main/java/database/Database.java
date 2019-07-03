@@ -16,21 +16,12 @@ import static database.TfIdfCalculator.calculateWordIDFs;
 import static database.TfIdfCalculator.generateTfMapForDocument;
 
 public class Database {
-    private static Database instance = null;
-
     // Using HashMap to ensure that finding words will happen fast (expected O(1) for contains() with worst case for search being O(log n))
     // Using TreeSet to maintain a sorted order - results in faster search but slower save
     private final HashMap<String, TreeSet<WordTfIdfEntry>> invertedIndex;
 
-    private Database(String documentsFile) {
+    public Database(String documentsFile) {
         this.invertedIndex = loadDocumentsFile(documentsFile);
-    }
-
-    public static Database getDataBase() {
-        if(instance == null) {
-            instance = new Database("documents.txt");
-        }
-        return instance;
     }
 
     public static HashMap<String, TreeSet<WordTfIdfEntry>> loadDocumentsFile(String documentsFile) {

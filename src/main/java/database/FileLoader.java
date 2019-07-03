@@ -10,8 +10,8 @@ public class FileLoader {
 
     public static Stream<String> getLinesFromFile(String documentsFile) {
         try {
-            return Files.lines(Paths.get(ClassLoader.getSystemResource(documentsFile).toURI()));
-        } catch (IOException | URISyntaxException e) {
+            return Files.lines(Paths.get(documentsFile));
+        } catch (IOException e) {
             throw new RuntimeException("Cannot load documents file");
         }
     }
