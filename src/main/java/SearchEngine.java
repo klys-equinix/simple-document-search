@@ -12,8 +12,8 @@ public class SearchEngine {
         System.out.println("Enter your search: ");
         while (scanner.hasNext()) {
             var searchString = scanner.nextLine();
-            database.searchForOccurrences(searchString).forEach(e -> {
-                System.out.println("Dokument " + e.getDocumentOrdinal());
+            database.searchForOccurrences(searchString.toLowerCase()).forEach(e -> {
+                System.out.println("Dokument " + e.getDocumentOrdinal() + 1);
             });
         }
     }

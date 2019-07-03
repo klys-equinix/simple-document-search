@@ -27,12 +27,9 @@ public class Database {
     public static HashMap<String, TreeSet<WordTfIdfEntry>> loadDocumentsFile(String documentsFile) {
         final HashMap<String, Long> numOfDocumentsWithWord = new HashMap<>();
 
-        Stream<String> stream = FileLoader.getLinesFromFile(documentsFile);
+        Stream<String> documents = FileLoader.getLinesFromFile(documentsFile);
 
-        var termFrequenciesByDocument = stream
-                .parallel()
-                .map(generateTfMapForDocument(numOfDocumentsWithWord))
-                .collect(Collectors.toList());
+        var termFrequenciesByDocument = getTermFrequenciesByDocument(numOfDocumentsWithWord, documents);
 
         Map<String, Double> idfMap = calculateWordIDFs(numOfDocumentsWithWord, numOfDocumentsWithWord.size());
 
@@ -55,6 +52,13 @@ public class Database {
                 );
 
         return invertedIndex;
+    }
+
+    private static List<Map<String, Double>> getTermFrequenciesByDocument(HashMap<String, Long> numOfDocumentsWithWord, Stream<String> documents) {
+        return documents
+                .parallel()
+                .map(generateTfMapForDocument(numOfDocumentsWithWord))
+                .collect(Collectors.toList());
     }
 
     public TreeSet<WordTfIdfEntry> searchForOccurrences(String key) {

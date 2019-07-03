@@ -24,6 +24,7 @@ public class TfIdfCalculator {
             String[] wordsInLine = line.split(" ");
             var size = wordsInLine.length;
             return Arrays.stream(wordsInLine)
+                    .map(String::toLowerCase)
                     .peek(placeWordInGlobalCount(numOfDocumentsWithWord))
                     .collect(
                             Collectors.groupingBy(s -> s,
