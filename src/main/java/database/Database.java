@@ -34,7 +34,7 @@ public class Database {
     public static HashMap<String, TreeSet<WordTfIdfEntry>> createIndexFromFile(String documentsFile) {
         final Map<String, Long> numOfDocumentsWithWord = new ConcurrentHashMap<>();
 
-        final Stream<String> documents = FileLoader.getLinesFromFile(documentsFile);
+        final var documents = FileLoader.getLinesFromFile(documentsFile);
 
         final var termFrequenciesByDocument = documents
                 .parallel()
