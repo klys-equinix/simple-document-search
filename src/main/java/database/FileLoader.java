@@ -6,9 +6,9 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 
-public class FileLoader {
+class FileLoader {
 
-    public static Stream<String> getLinesFromFile(String documentsFile) {
+    static Stream<String> getLinesFromFile(String documentsFile) {
         try {
             return Files.lines(Paths.get(documentsFile));
         } catch (IOException e) {

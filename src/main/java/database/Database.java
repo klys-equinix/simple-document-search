@@ -30,7 +30,11 @@ public class Database {
         this.invertedIndex = createIndexFromFile(documentsFile);
     }
 
-    public static HashMap<String, TreeSet<WordTfIdfEntry>> createIndexFromFile(String documentsFile) {
+    public Optional<TreeSet<WordTfIdfEntry>> searchForOccurrences(String key) {
+        return Optional.ofNullable(invertedIndex.get(key));
+    }
+
+    private static HashMap<String, TreeSet<WordTfIdfEntry>> createIndexFromFile(String documentsFile) {
         final Map<String, Long> numOfDocumentsWithWord = new ConcurrentHashMap<>();
 
         final var documents = FileLoader.getLinesFromFile(documentsFile);
@@ -70,7 +74,7 @@ public class Database {
                 );
     }
 
-    public static Consumer<String[]> placeWordsInGlobalCount(Map<String, Long> numOfDocumentsWithWord) {
+    private static Consumer<String[]> placeWordsInGlobalCount(Map<String, Long> numOfDocumentsWithWord) {
         return words ->
                 Arrays.stream(words)
                         .forEach(word ->
@@ -80,10 +84,6 @@ public class Database {
                                                 () -> numOfDocumentsWithWord.put(word, 1L)
                                         )
                         );
-    }
-
-    public Optional<TreeSet<WordTfIdfEntry>> searchForOccurrences(String key) {
-        return Optional.ofNullable(invertedIndex.get(key));
     }
 
     private static Function<String, String[]> tokenize() {

@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 
 import static java.lang.Math.log;
 
-public class TfIdfCalculator {
-    public static Function<String[], Map<String, Double>> calculateTfsForDocument() {
+class TfIdfCalculator {
+    static Function<String[], Map<String, Double>> calculateTfsForDocument() {
         return line -> {
             var size = line.length;
             return Arrays.stream(line)
@@ -31,7 +31,7 @@ public class TfIdfCalculator {
         };
     }
 
-    public static Map<String, Double> calculateWordIDFs(Map<String, Long> numOfDocumentsWithWord) {
+    static Map<String, Double> calculateWordIDFs(Map<String, Long> numOfDocumentsWithWord) {
         var allWordsCount = numOfDocumentsWithWord.size();
         return numOfDocumentsWithWord.entrySet().parallelStream()
                 .collect(Collectors.toMap(
@@ -40,7 +40,7 @@ public class TfIdfCalculator {
                 ));
     }
 
-    public static Stream<AbstractMap.SimpleEntry<String, WordTfIdfEntry>> calculateTdIdfForWordsInDoc(
+    static Stream<AbstractMap.SimpleEntry<String, WordTfIdfEntry>> calculateTdIdfForWordsInDoc(
             List<Map<String, Double>> termFrequenciesByDocument,
             Map<String, Double> idfMap,
             int documentOrdinal)
