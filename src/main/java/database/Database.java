@@ -38,21 +38,24 @@ public class Database {
 
         final var termFrequenciesByDocument = documents
                 .parallel()
-                .map(preProcessDoc())
+                .map(tokenize())
                 .peek(placeWordsInGlobalCount(numOfDocumentsWithWord))
                 .map(generateTfMapForDocument())
                 .collect(Collectors.toList());
 
         Map<String, Double> idfMap = calculateWordIDFs(numOfDocumentsWithWord);
 
+        return createIndex(termFrequenciesByDocument, idfMap);
+    }
+
+    private static HashMap<String, TreeSet<WordTfIdfEntry>> createIndex(
+            List<Map<String, Double>> termFrequenciesByDocument,
+            Map<String, Double> idfMap
+    ) {
         /*
         It is done in this a little overcomplicated way to ensure immutability
         and to enable efficient parallel processing
          */
-        return createIndex(termFrequenciesByDocument, idfMap);
-    }
-
-    private static HashMap<String, TreeSet<WordTfIdfEntry>> createIndex(List<Map<String, Double>> termFrequenciesByDocument, Map<String, Double> idfMap) {
         return IntStream.range(0, termFrequenciesByDocument.size())
                 .parallel()
                 .mapToObj(documentOrdinal ->
@@ -84,7 +87,7 @@ public class Database {
         return Optional.ofNullable(invertedIndex.get(key));
     }
 
-    private static Function<String, String[]> preProcessDoc() {
+    private static Function<String, String[]> tokenize() {
         return doc -> doc.replaceAll("\\p{Punct}", "").toLowerCase().split(" ");
     }
 }
