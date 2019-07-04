@@ -16,4 +16,9 @@ public class WordTfIdfEntry implements Comparable<WordTfIdfEntry> {
         //because we want descending order
         return -1 * tdIdf.compareTo(e.tdIdf);
     }
+
+    @Override
+    public String toString() {
+        return "Dokument " + (documentOrdinal + 1);
+    }
 }

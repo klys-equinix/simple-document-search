@@ -15,9 +15,7 @@ public class SearchEngine {
             var searchString = scanner.nextLine();
             database.searchForOccurrences(searchString.toLowerCase())
                     .ifPresentOrElse(
-                            s -> s.forEach(e -> {
-                                System.out.println("Dokument " + (e.getDocumentOrdinal() + 1));
-                            }),
+                            s -> System.out.println(s.toString()),
                             () -> System.out.println("Nie znaleziono słowa")
                     );
         }
