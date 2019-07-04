@@ -43,9 +43,9 @@ public class Database {
                 .map(generateTfMapForDocument())
                 .collect(Collectors.toList());
 
-        Map<String, Double> idfMap = calculateWordIDFs(numOfDocumentsWithWord);
+        final var idfsByWord = calculateWordIDFs(numOfDocumentsWithWord);
 
-        return createIndex(termFrequenciesByDocument, idfMap);
+        return createIndex(termFrequenciesByDocument, idfsByWord);
     }
 
     private static HashMap<String, TreeSet<WordTfIdfEntry>> createIndex(
