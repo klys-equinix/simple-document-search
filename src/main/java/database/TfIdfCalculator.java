@@ -20,7 +20,6 @@ public class TfIdfCalculator {
         return line -> {
             var size = line.length;
             return Arrays.stream(line)
-                    .map(String::toLowerCase)
                     .collect(
                             Collectors.groupingBy(s -> s,
                                     Collectors.collectingAndThen(

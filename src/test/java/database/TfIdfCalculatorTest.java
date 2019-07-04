@@ -15,13 +15,13 @@ public class TfIdfCalculatorTest {
 
     @Test
     public void generateTfMapForDocument() {
-        var document = "the Brown fox jumped the brown".split(" ");
+        var document = "the Brown fox jumped the brown".toLowerCase().split(" ");
 
         var documentTfMap = TfIdfCalculator.generateTfMapForDocument().apply(document);
 
         assertEquals(documentTfMap.get("the"), ((double) 2) / document.length, 0.0);
-        assertEquals(documentTfMap.get("brown"), ((double) 2) / document.length, 0.0);
         assertNull(documentTfMap.get("Brown"));
+        assertEquals(documentTfMap.get("brown"), ((double) 2) / document.length, 0.0);
         assertEquals(documentTfMap.get("fox"), ((double) 1) / document.length, 0.0);
         assertEquals(documentTfMap.get("jumped"), ((double) 1) / document.length, 0.0);
     }

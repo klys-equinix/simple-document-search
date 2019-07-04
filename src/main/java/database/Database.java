@@ -4,6 +4,7 @@ import model.WordTfIdfEntry;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeSet;
@@ -27,17 +28,17 @@ public class Database {
     private final HashMap<String, TreeSet<WordTfIdfEntry>> invertedIndex;
 
     public Database(String documentsFile) {
-        this.invertedIndex = createIdndexFromFile(documentsFile);
+        this.invertedIndex = createIndexFromFile(documentsFile);
     }
 
-    public static HashMap<String, TreeSet<WordTfIdfEntry>> createIdndexFromFile(String documentsFile) {
+    public static HashMap<String, TreeSet<WordTfIdfEntry>> createIndexFromFile(String documentsFile) {
         final Map<String, Long> numOfDocumentsWithWord = new ConcurrentHashMap<>();
 
         final Stream<String> documents = FileLoader.getLinesFromFile(documentsFile);
 
         final var termFrequenciesByDocument = documents
                 .parallel()
-                .map(doc -> doc.split(" "))
+                .map(preProcessDoc())
                 .peek(placeWordsInGlobalCount(numOfDocumentsWithWord))
                 .map(generateTfMapForDocument())
                 .collect(Collectors.toList());
@@ -48,6 +49,10 @@ public class Database {
         It is done in this a little overcomplicated way to ensure immutability
         and to enable efficient parallel processing
          */
+        return createIndex(termFrequenciesByDocument, idfMap);
+    }
+
+    private static HashMap<String, TreeSet<WordTfIdfEntry>> createIndex(List<Map<String, Double>> termFrequenciesByDocument, Map<String, Double> idfMap) {
         return IntStream.range(0, termFrequenciesByDocument.size())
                 .parallel()
                 .mapToObj(documentOrdinal ->
@@ -67,15 +72,19 @@ public class Database {
         return words ->
                 Arrays.stream(words)
                         .forEach(word ->
-                                Optional.ofNullable(numOfDocumentsWithWord.get(word.toLowerCase()))
+                                Optional.ofNullable(numOfDocumentsWithWord.get(word))
                                         .ifPresentOrElse(
-                                                count -> numOfDocumentsWithWord.put(word.toLowerCase(), ++count),
-                                                () -> numOfDocumentsWithWord.put(word.toLowerCase(), 1L)
+                                                count -> numOfDocumentsWithWord.put(word, ++count),
+                                                () -> numOfDocumentsWithWord.put(word, 1L)
                                         )
                         );
     }
 
     public Optional<TreeSet<WordTfIdfEntry>> searchForOccurrences(String key) {
         return Optional.ofNullable(invertedIndex.get(key));
+    }
+
+    private static Function<String, String[]> preProcessDoc() {
+        return doc -> doc.replaceAll("\\p{Punct}", "").toLowerCase().split(" ");
     }
 }
