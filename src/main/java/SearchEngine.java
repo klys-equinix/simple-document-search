@@ -1,5 +1,6 @@
 import database.Database;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 public class SearchEngine {
@@ -12,9 +13,13 @@ public class SearchEngine {
         System.out.println("Enter your search: ");
         while (scanner.hasNext()) {
             var searchString = scanner.nextLine();
-            database.searchForOccurrences(searchString.toLowerCase()).forEach(e -> {
-                System.out.println("Dokument " + e.getDocumentOrdinal() + 1);
-            });
+            database.searchForOccurrences(searchString.toLowerCase())
+                    .ifPresentOrElse(
+                            s -> s.forEach(e -> {
+                                System.out.println("Dokument " + (e.getDocumentOrdinal() + 1));
+                            }),
+                            () -> System.out.println("Nie znaleziono słowa")
+                    );
         }
     }
 }

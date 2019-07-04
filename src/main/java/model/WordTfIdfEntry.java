@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-@EqualsAndHashCode(of = "tdIdf")
+@EqualsAndHashCode
 @AllArgsConstructor
 @Getter
 public class WordTfIdfEntry implements Comparable<WordTfIdfEntry> {

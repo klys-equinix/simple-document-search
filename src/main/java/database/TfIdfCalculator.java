@@ -1,31 +1,26 @@
 package database;
 
+import model.WordTfIdfEntry;
+
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.Math.log;
 
 public class TfIdfCalculator {
-    public static Map<String, Double> calculateWordIDFs(HashMap<String, Long> numOfDocumentsWithWord, int allWordsCount) {
-        return numOfDocumentsWithWord.entrySet().parallelStream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> log(allWordsCount / e.getValue().doubleValue())
-                ));
-    }
-
-    public static Function<String, Map<String, Double>> generateTfMapForDocument(HashMap<String, Long> numOfDocumentsWithWord) {
+    public static Function<String[], Map<String, Double>> generateTfMapForDocument() {
         return line -> {
-            String[] wordsInLine = line.split(" ");
-            var size = wordsInLine.length;
-            return Arrays.stream(wordsInLine)
+            var size = line.length;
+            return Arrays.stream(line)
                     .map(String::toLowerCase)
-                    .peek(placeWordInGlobalCount(numOfDocumentsWithWord))
                     .collect(
                             Collectors.groupingBy(s -> s,
                                     Collectors.collectingAndThen(
@@ -37,12 +32,25 @@ public class TfIdfCalculator {
         };
     }
 
-    public static Consumer<String> placeWordInGlobalCount(HashMap<String, Long> numOfDocumentsWithWord) {
-        return word ->
-                Optional.ofNullable(numOfDocumentsWithWord.get(word))
-                        .ifPresentOrElse(
-                                count -> numOfDocumentsWithWord.put(word, ++count),
-                                () -> numOfDocumentsWithWord.put(word, 1L)
-                        );
+    public static Map<String, Double> calculateWordIDFs(Map<String, Long> numOfDocumentsWithWord) {
+        var allWordsCount = numOfDocumentsWithWord.size();
+        return numOfDocumentsWithWord.entrySet().parallelStream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> log(allWordsCount / e.getValue().doubleValue())
+                ));
+    }
+
+    public static Stream<AbstractMap.SimpleEntry<String, WordTfIdfEntry>> calculateTdIdfForWordsInDoc(
+            List<Map<String, Double>> termFrequenciesByDocument,
+            Map<String, Double> idfMap,
+            int documentOrdinal)
+    {
+        return termFrequenciesByDocument.get(documentOrdinal).entrySet().stream().map((entry) -> {
+            var word = entry.getKey();
+            var wordTf = entry.getValue();
+            var wordTfIdf = idfMap.get(word) * wordTf;
+            return new AbstractMap.SimpleEntry<>(word, new WordTfIdfEntry(wordTfIdf, documentOrdinal));
+        });
     }
 }
