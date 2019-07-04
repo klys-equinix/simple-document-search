@@ -3,7 +3,6 @@ package database;
 import model.WordTfIdfEntry;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,10 +13,10 @@ import static org.junit.Assert.*;
 public class TfIdfCalculatorTest {
 
     @Test
-    public void generateTfMapForDocument() {
+    public void thatCanCalculateTermFrequencies() {
         var document = "the Brown fox jumped the brown".toLowerCase().split(" ");
 
-        var documentTfMap = TfIdfCalculator.generateTfMapForDocument().apply(document);
+        var documentTfMap = TfIdfCalculator.calculateTfsForDocument().apply(document);
 
         assertEquals(documentTfMap.get("the"), ((double) 2) / document.length, 0.0);
         assertNull(documentTfMap.get("Brown"));
@@ -27,7 +26,7 @@ public class TfIdfCalculatorTest {
     }
 
     @Test
-    public void calculateWordIDFs() {
+    public void thatCanCalculateInveredDocumentFrequencies() {
         var globalWordCount = Map.of(
                 "a", 1L,
                 "b", 2L
@@ -40,7 +39,7 @@ public class TfIdfCalculatorTest {
     }
 
     @Test
-    public void calculateTdIdfForWordsInDoc() {
+    public void thatCanCalculateTdIdf() {
         var termFrequenciesByDocument = List.of(
                 Map.of(
                         "a", 0.125,

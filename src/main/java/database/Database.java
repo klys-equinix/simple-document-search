@@ -13,11 +13,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static database.TfIdfCalculator.calculateTdIdfForWordsInDoc;
 import static database.TfIdfCalculator.calculateWordIDFs;
-import static database.TfIdfCalculator.generateTfMapForDocument;
+import static database.TfIdfCalculator.calculateTfsForDocument;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toCollection;
@@ -40,7 +39,7 @@ public class Database {
                 .parallel()
                 .map(tokenize())
                 .peek(placeWordsInGlobalCount(numOfDocumentsWithWord))
-                .map(generateTfMapForDocument())
+                .map(calculateTfsForDocument())
                 .collect(Collectors.toList());
 
         final var idfsByWord = calculateWordIDFs(numOfDocumentsWithWord);

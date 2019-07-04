@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import static java.lang.Math.log;
 
 public class TfIdfCalculator {
-    public static Function<String[], Map<String, Double>> generateTfMapForDocument() {
+    public static Function<String[], Map<String, Double>> calculateTfsForDocument() {
         return line -> {
             var size = line.length;
             return Arrays.stream(line)
