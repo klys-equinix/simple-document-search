@@ -16,7 +16,7 @@ public class SearchEngine {
             database.searchForOccurrences(searchString.toLowerCase())
                     .ifPresentOrElse(
                             s -> System.out.println(s.toString()),
-                            () -> System.out.println("Nie znaleziono słowa")
+                            () -> System.out.println("Token not found")
                     );
         }
     }

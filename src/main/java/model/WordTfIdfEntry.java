@@ -19,6 +19,6 @@ public class WordTfIdfEntry implements Comparable<WordTfIdfEntry> {
 
     @Override
     public String toString() {
-        return "Dokument " + (documentOrdinal + 1);
+        return "Document " + (documentOrdinal + 1);
     }
 }
