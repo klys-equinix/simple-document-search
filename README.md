@@ -1,5 +1,4 @@
 # simple-document-search
-Repo for Findwise recruitment
 
 Hi.
 
