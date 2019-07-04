@@ -27,10 +27,10 @@ public class Database {
     private final HashMap<String, TreeSet<WordTfIdfEntry>> invertedIndex;
 
     public Database(String documentsFile) {
-        this.invertedIndex = loadDocumentsFile(documentsFile);
+        this.invertedIndex = createIdndexFromFile(documentsFile);
     }
 
-    public static HashMap<String, TreeSet<WordTfIdfEntry>> loadDocumentsFile(String documentsFile) {
+    public static HashMap<String, TreeSet<WordTfIdfEntry>> createIdndexFromFile(String documentsFile) {
         final Map<String, Long> numOfDocumentsWithWord = new ConcurrentHashMap<>();
 
         final Stream<String> documents = FileLoader.getLinesFromFile(documentsFile);
@@ -67,10 +67,10 @@ public class Database {
         return words ->
                 Arrays.stream(words)
                         .forEach(word ->
-                                Optional.ofNullable(numOfDocumentsWithWord.get(word))
+                                Optional.ofNullable(numOfDocumentsWithWord.get(word.toLowerCase()))
                                         .ifPresentOrElse(
-                                                count -> numOfDocumentsWithWord.put(word, ++count),
-                                                () -> numOfDocumentsWithWord.put(word, 1L)
+                                                count -> numOfDocumentsWithWord.put(word.toLowerCase(), ++count),
+                                                () -> numOfDocumentsWithWord.put(word.toLowerCase(), 1L)
                                         )
                         );
     }
